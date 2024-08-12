@@ -37,24 +37,24 @@ CustomerSchema.post("findOneAndDelete", async(Customer)=>{
     console.log("Post is triggered")
 })
 
-// const adding= async()=>{
-//     let customer= await Customer.findOne({username: "Mahisha"})
+const adding= async()=>{
+    let customer= await Customer.findOne({username: "Mahisha"})
 
-//     let order1= await Order.findOne({item: "pani puri"});
-//     let order2= await Order.findOne({item: "Pizza"});
-//     let order3= await Order.findOne({item: "Pav Bhaji"});
-//     // let order= new Order({
-//     //     item: "pani puri",
-//     //     price: 20
-//     // })
-//     customer.orders.push(order1);
-//     customer.orders.push(order2);
-//     customer.orders.push(order3);
+    let order1= await Order.findOne({item: "pani puri"});
+    let order2= await Order.findOne({item: "Pizza"});
+    let order3= await Order.findOne({item: "Pav Bhaji"});
+    // let order= new Order({
+    //     item: "pani puri",
+    //     price: 20
+    // })
+    customer.orders.push(order1);
+    customer.orders.push(order2);
+    customer.orders.push(order3);
 
-//     // await order.save();
-//     await customer.save();
-// }
-// adding();
+    // await order.save();
+    await customer.save();
+}
+adding();
 
 const deletion= async()=>{
     await Customer.findByIdAndDelete('66ba2cca5731a12c62e8e3f0');
