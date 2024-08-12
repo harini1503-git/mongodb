@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {Schema}= mongoose;
 
 main().then(()=>{
     console.log("Connection successful.....");
@@ -9,56 +10,53 @@ async function main() {
   await mongoose.connect('mongodb://127.0.0.1:27017/test');
 }
 
-// Schema to make format or structure for your database
-const StudentSchema= new mongoose.Schema(
+//order information
+const orderSchema= new mongoose.Schema({
+    item: String,
+    price: Number
+})
+const Order= new mongoose.model("Order", orderSchema);
+
+//customer information
+const CustomerSchema= new mongoose.Schema(
     {
-        name: String,
-        email: String,
-        age: Number,
-        marks: Number
+        username: String,
+        orders: [{
+            type: Schema.Types.ObjectId,
+            ref: "Order"
+        }]
     }
-)
+);
 
-// model is a mongoose class with which we construct documents.
-const students= mongoose.model("students", StudentSchema);
+const Customer= new mongoose.model("Customer", CustomerSchema);
 
-// we use model as a class to create a object to insert data.
-const student1= new students({name: "Harini", email: "harinimudaliar1503@gmail.com", age: 21, marks: 97})
-const student2= new students({name: "chahna", email: "chahnapatel@gmail.com", age: 21, marks: 98})
-const student3= new students({name: "dhruvi", email: "dhruvipatel@gmail.com", age: 21, marks: 99})
-
-student1.save().then((res)=>{
-    console.log(res);
-}).catch((err)=>{
-    console.log(err);
-})
-
-//insert with the help of insertmany function
-students.insertMany([
-    {
-        name: "Mahisha",
-        email: "mahishamudaliar2603@gmail.com",
-        age: 23,
-        marks: 73
-    },
-    {
-        name: "Pradhuyun",
-        email: "pradhuyunmudaliar0306@gmail.com",
-        age: 18,
-        marks: 100
+CustomerSchema.post("findOneAndDelete", async(Customer)=>{
+    if(Customer.orders.length){
+        await Order.deleteMany({_id: {$in: Customer.orders}});
     }
-])
-.then((res)=>{
-    console.log(res);
-})
-.catch((err)=>{
-    console.log(err);
+    console.log("Post is triggered")
 })
 
-//find method
-students.findByIdAndUpdate("669020da0554cfa6395b91ba", {$set: {email: "mahisha2603@gmail.com"}}).then((res)=>{
-    console.log(res);
-})
-.catch((err)=>{
-    console.log(err);
-})
+// const adding= async()=>{
+//     let customer= await Customer.findOne({username: "Mahisha"})
+
+//     let order1= await Order.findOne({item: "pani puri"});
+//     let order2= await Order.findOne({item: "Pizza"});
+//     let order3= await Order.findOne({item: "Pav Bhaji"});
+//     // let order= new Order({
+//     //     item: "pani puri",
+//     //     price: 20
+//     // })
+//     customer.orders.push(order1);
+//     customer.orders.push(order2);
+//     customer.orders.push(order3);
+
+//     // await order.save();
+//     await customer.save();
+// }
+// adding();
+
+const deletion= async()=>{
+    await Customer.findByIdAndDelete('66ba2cca5731a12c62e8e3f0');
+}
+deletion();
